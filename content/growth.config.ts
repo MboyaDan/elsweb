@@ -135,3 +135,32 @@ export const funnelSteps = [
   "Booking / quote",
   "Dashboard",
 ] as const;
+
+export const faqSchema = z.array(z.object({ q: z.string(), a: z.string() }));
+
+export const growthFaq = faqSchema.parse([
+  {
+    q: "Do you guarantee results?",
+    a: "No. We do not promise outcomes. We set the work up, measure it, and report what the numbers show.",
+  },
+  {
+    q: "What does the Growth Audit cover?",
+    a: "A short review of how your business shows up when customers search, with the top fixes and how long each one takes.",
+  },
+  {
+    q: "How long is the Foundation Sprint?",
+    a: "It is a 30-day project. It covers your Google Business Profile, service or landing pages, a WhatsApp path, tracking, and a report on day 30.",
+  },
+  {
+    q: "Do I need a new website?",
+    a: "Not necessarily. The audit looks at what you have first. Some businesses need new service pages, others need fixes to what exists.",
+  },
+  {
+    q: "Does AI answer my customers?",
+    a: "Where it makes sense, AI can draft answers to common questions, and every conversation can be handed to a person. You decide how much it does.",
+  },
+  {
+    q: "Where are you based?",
+    a: "We are based in Nairobi and deliver to clients in Kenya and internationally, working remotely.",
+  },
+]);
