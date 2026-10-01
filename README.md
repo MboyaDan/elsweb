@@ -28,7 +28,7 @@ npm run dev
 - `content/`: typed, Zod-validated content (`site.config.ts` reads env, `services.ts`, `growth.config.ts`, `proof.ts`)
 - `lib/routes.ts`: the list of routes that exist. Nav, footer and sitemap read it.
 - `lib/seo.ts`, `lib/analytics.ts`: metadata and JSON-LD helpers, consent-gated `track()`
-- `components/Logo.tsx`: text wordmark, single swap point for Mark C
+- `components/Logo.tsx`: Mark C (transparent PNGs in `public/brand/`, dark and white variants)
 
 ## Dependencies beyond the brief
 

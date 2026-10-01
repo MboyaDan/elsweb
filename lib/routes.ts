@@ -8,6 +8,12 @@ export function isLive(path: string | undefined): path is string {
   return Boolean(path) && (liveRoutes as readonly string[]).includes(path as string);
 }
 
-export const navRoutes: { href: string; label: string }[] = [
-  // { href: "/services", label: "Services" },  (added in Stage 3)
-];
+/** Page routes shown in nav and footer. Empty until Stage 3 adds /services. */
+export const navRoutes: { href: string; label: string }[] = [];
+
+/** In-page anchors on the homepage. Each id exists in app/page.tsx. */
+export const navAnchors = [
+  { href: "/#capabilities", label: "Capabilities" },
+  { href: "/#growth", label: "Growth" },
+  { href: "/#work", label: "Work" },
+] as const;

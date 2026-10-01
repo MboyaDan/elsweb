@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { siteConfig } from "../content/site.config";
-import { navRoutes } from "../lib/routes";
+import { navAnchors, navRoutes } from "../lib/routes";
 
 export function SiteFooter() {
   return (
@@ -13,7 +13,7 @@ export function SiteFooter() {
           <p className="text-sm">{siteConfig.delivery}</p>
         </div>
         <ul className="space-y-2 text-sm">
-          {navRoutes.map((r) => (
+          {[...navRoutes, ...navAnchors].map((r) => (
             <li key={r.href}>
               <Link href={r.href} className="hover:text-white">
                 {r.label}

@@ -61,7 +61,7 @@ if (process.argv.includes("--write-todo")) {
     "WhatsApp Business number, digits only (NEXT_PUBLIC_WHATSAPP_NUMBER): WhatsApp button omitted until set",
     "GitHub and X URLs in content/site.config.ts: omitted until set (LinkedIn is set)",
     "Production stack list: confirm each tool is true before it appears on a page (Go/Gin/sqlc/pgx, FastAPI, Next.js, PostgreSQL RLS, Redis, WebSockets, M-Pesa Daraja, Cloud Run/Cloud SQL/BigQuery/Pub/Sub, Docker, GitHub Actions, Groq/OpenAI-compatible APIs). Not published yet",
-    "Logo: Mark C was not supplied. Plain text wordmark in components/Logo.tsx (single swap point)",
+    "Logo: built from the supplied JPEG (transparent PNG variants in public/brand/). Replace with an SVG master when available",
     "Privacy (/privacy) and Terms (/terms): draft, pending legal review (pages arrive in Stage 4)",
     "GA4 measurement ID (NEXT_PUBLIC_GA4_ID)",
     "Resend: RESEND_API_KEY, RESEND_FROM (verified sending subdomain), LEAD_NOTIFY_TO",

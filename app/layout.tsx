@@ -8,6 +8,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { MotionProvider } from "../components/MotionProvider";
 import { JsonLd } from "../components/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "../lib/seo";
+import { startConversationHref } from "../lib/cta";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <MotionProvider>
-          <SiteNav />
+          <SiteNav ctaHref={startConversationHref()} />
           <main id="main">{children}</main>
           <SiteFooter />
         </MotionProvider>
