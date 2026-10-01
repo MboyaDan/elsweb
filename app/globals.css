@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy: #0b1f33;
+  --color-charcoal: #111827;
+  --color-electric: #2563eb;
+  --color-cyan: #06b6d4;
+  --color-offwhite: #f8fafc;
+  --color-slate: #475569;
+  --color-emerald: #10b981;
+  --color-amber: #f59e0b; /* Academy only, not used in this slice */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--color-offwhite);
+  color: var(--color-slate);
+  font-family: var(--font-sans);
+}
+h1, h2, h3 {
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+:focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
