@@ -1,7 +1,15 @@
 import { Button } from "./Button";
 import { startConversationHref } from "../lib/cta";
+import { WhatsAppButton } from "./WhatsAppButton";
 
-export function CTASection({ variant = "default" }: { variant?: "default" | "growth" }) {
+export function CTASection({
+  variant = "default",
+  whatsappRef,
+}: {
+  variant?: "default" | "growth";
+  /** Reference code for the WhatsApp button beside the primary CTA. Omit to leave it out. */
+  whatsappRef?: string;
+}) {
   const growth = variant === "growth";
   const href = growth ? "/growth-audit" : startConversationHref();
   return (
@@ -16,10 +24,13 @@ export function CTASection({ variant = "default" }: { variant?: "default" | "gro
             : "Tell us what you are trying to build, fix or measure, and we will tell you how we would approach it."}
         </p>
         {href && (
-          <div className="mt-10">
+          <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             <Button href={href} ctaId={growth ? "growth-final-cta" : "final-cta"}>
               {growth ? "Request a growth audit" : "Start a conversation"}
             </Button>
+            {whatsappRef && (
+              <WhatsAppButton topic="working with ELS" refCode={whatsappRef} variant="outline-dark" label="Or message us on WhatsApp" />
+            )}
           </div>
         )}
       </div>

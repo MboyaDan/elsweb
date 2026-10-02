@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { WhatsAppButton } from "./WhatsAppButton";
 import { siteConfig } from "../content/site.config";
 import { legalRoutes, navAnchors, navRoutes } from "../lib/routes";
 
@@ -20,6 +21,9 @@ export function SiteFooter() {
               </Link>
             </li>
           ))}
+          <li>
+            <WhatsAppButton topic="working with ELS" refCode="ft-web" variant="link-dark" label="WhatsApp" />
+          </li>
           {siteConfig.email && (
             <li>
               <a href={`mailto:${siteConfig.email}`} className="hover:text-white">

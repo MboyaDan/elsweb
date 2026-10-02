@@ -97,7 +97,7 @@ export default function Home() {
         </div>
       </section>
 
-      <CTASection />
+      <CTASection whatsappRef="hm-web" />
     </>
   );
 }
