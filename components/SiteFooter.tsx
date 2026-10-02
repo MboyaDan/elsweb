@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { siteConfig } from "../content/site.config";
-import { navAnchors, navRoutes } from "../lib/routes";
+import { legalRoutes, navAnchors, navRoutes } from "../lib/routes";
 
 export function SiteFooter() {
   return (
@@ -29,8 +29,19 @@ export function SiteFooter() {
           )}
         </ul>
       </div>
-      <div className="border-t border-white/10 px-6 py-4 text-center text-xs">
-        © {new Date().getFullYear()} {siteConfig.name}
+      <div className="flex flex-col items-center justify-between gap-2 border-t border-white/10 px-6 py-4 text-xs sm:flex-row">
+        <span>
+          © {new Date().getFullYear()} {siteConfig.name}
+        </span>
+        <ul className="flex gap-4">
+          {legalRoutes.map((r) => (
+            <li key={r.href}>
+              <Link href={r.href} className="hover:text-white">
+                {r.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </footer>
   );

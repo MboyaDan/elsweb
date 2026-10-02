@@ -12,6 +12,7 @@ export type Consent = "granted" | "denied" | null;
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
   }
 }
 
@@ -31,4 +32,3 @@ export function track(event: AnalyticsEvent, params: Record<string, string | num
   if (getConsent() !== "granted" || !window.gtag) return;
   window.gtag("event", event, params);
 }
-// Stage 4: consent banner and GA4 script loader.

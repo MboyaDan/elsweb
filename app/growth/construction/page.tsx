@@ -6,6 +6,7 @@ import { SectionHeading } from "../../../components/SectionHeading";
 import { FAQ } from "../../../components/FAQ";
 import { CTASection } from "../../../components/CTASection";
 import { JsonLd } from "../../../components/JsonLd";
+import { WhatsAppButton } from "../../../components/WhatsAppButton";
 
 export const metadata = buildMetadata({
   title: "Growth for contractors, builders and developers",
@@ -120,6 +121,11 @@ export default function ConstructionGrowthPage() {
         </div>
       </section>
 
+      <div className="bg-offwhite pb-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <WhatsAppButton topic="construction growth" refCode="gc-web" />
+        </div>
+      </div>
       <CTASection variant="growth" />
       <JsonLd data={serviceLd} />
     </>

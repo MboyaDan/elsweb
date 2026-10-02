@@ -3,28 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { TurnstileField } from "./TurnstileField";
-import { auditSchema, industries } from "../lib/validation";
 import { track } from "../lib/analytics";
 import { isLive } from "../lib/routes";
+import { budgetRanges, contactSchema, contactServices, timelines } from "../lib/validation";
 
 type Status = "idle" | "submitting" | "success" | "error";
-
 const input =
   "w-full rounded-md border bg-white px-4 py-3 text-base text-navy placeholder:text-slate/60 border-slate/40 aria-[invalid=true]:border-red-700";
 
-function Field({
-  id,
-  label,
-  error,
-  hint,
-  children,
-}: {
-  id: string;
-  label: string;
-  error?: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
+function Field({ id, label, error, hint, children }: { id: string; label: string; error?: string; hint?: string; children: React.ReactNode }) {
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-navy">
@@ -45,12 +32,27 @@ function Field({
   );
 }
 
-export function AuditForm({ contactEmail }: { contactEmail?: string }) {
+function Select({ options, ...rest }: { options: readonly string[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <select {...rest} defaultValue="" className={input}>
+      <option value="" disabled>
+        Choose one
+      </option>
+      {options.map((o) => (
+        <option key={o} value={o}>
+          {o}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+export function ContactForm({ contactEmail }: { contactEmail?: string }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [serverMsg, setServerMsg] = useState("");
   const mountedAt = useRef(0);
   const started = useRef(false);
-  const [serverMsg, setServerMsg] = useState("");
   useEffect(() => {
     mountedAt.current = Date.now();
   }, []);
@@ -65,21 +67,23 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
   function onFirstTouch() {
     if (started.current) return;
     started.current = true;
-    track("contact_started", { form: "growth_audit" });
+    track("contact_started", { form: "contact" });
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const get = (k: string) => String(fd.get(k) ?? "");
-    const parsed = auditSchema.safeParse({
-      businessName: get("businessName"),
-      website: get("website"),
-      city: get("city"),
-      industry: get("industry"),
-      whatsapp: get("whatsapp"),
+    const parsed = contactSchema.safeParse({
+      name: get("name"),
+      company: get("company"),
       email: get("email"),
-      goal: get("goal"),
+      phone: get("phone"),
+      website: get("website"),
+      service: get("service"),
+      budget: get("budget"),
+      timeline: get("timeline"),
+      message: get("message"),
       consent: fd.get("consent") === "on",
     });
     if (!parsed.success) {
@@ -94,36 +98,35 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
       return;
     }
     setErrors({});
+    setServerMsg("");
     setStatus("submitting");
-
     const qs = new URLSearchParams(window.location.search);
-    const payload = {
-      type: "audit",
-      ...parsed.data,
-      company_website: get("company_website"),
-      elapsedMs: Date.now() - mountedAt.current,
-      turnstileToken: get("cf-turnstile-response") || undefined,
-      attribution: {
-        utm_source: qs.get("utm_source") ?? undefined,
-        utm_medium: qs.get("utm_medium") ?? undefined,
-        utm_campaign: qs.get("utm_campaign") ?? undefined,
-        referrer: document.referrer || undefined,
-        landing_path: window.location.pathname,
-        cta_id: qs.get("cta_id") ?? "growth-audit-form",
-      },
-    };
     try {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          type: "contact",
+          ...parsed.data,
+          company_website: get("company_website"),
+          elapsedMs: Date.now() - mountedAt.current,
+          turnstileToken: get("cf-turnstile-response") || undefined,
+          attribution: {
+            utm_source: qs.get("utm_source") ?? undefined,
+            utm_medium: qs.get("utm_medium") ?? undefined,
+            utm_campaign: qs.get("utm_campaign") ?? undefined,
+            referrer: document.referrer || undefined,
+            landing_path: window.location.pathname,
+            cta_id: qs.get("cta_id") ?? "contact-form",
+          },
+        }),
       });
       if (!res.ok) {
         const j = (await res.json().catch(() => null)) as { message?: string } | null;
         setServerMsg(j?.message ?? "");
         throw new Error(String(res.status));
       }
-      track("audit_requested", { industry: parsed.data.industry });
+      track("contact_submitted", { service: parsed.data.service });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -133,8 +136,8 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
   if (status === "success") {
     return (
       <div role="status" className="border border-emerald/40 bg-white p-8">
-        <h2 className="text-2xl font-semibold">Request received</h2>
-        <p className="mt-3 text-slate">Thank you. We will review your details and reply by email or WhatsApp.</p>
+        <h2 className="text-2xl font-semibold">Message received</h2>
+        <p className="mt-3 text-slate">Thank you. We will reply by email or WhatsApp.</p>
       </div>
     );
   }
@@ -142,7 +145,7 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
   const count = Object.keys(errors).length;
   return (
     <form onSubmit={onSubmit} onFocusCapture={onFirstTouch} noValidate className="space-y-5 border border-slate/20 bg-white p-6 md:p-8">
-      <h2 className="text-2xl font-semibold">Request a growth audit</h2>
+      <h2 className="text-2xl font-semibold">Start a conversation</h2>
       {count > 0 && (
         <p role="alert" className="border border-red-700/40 bg-red-50 p-3 text-sm font-medium text-red-800">
           Please fix {count} {count === 1 ? "field" : "fields"} below.
@@ -154,49 +157,44 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
           <input type="text" name="company_website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      <Field id="businessName" label="Business name" error={errors.businessName}>
-        <input {...aria("businessName")} type="text" autoComplete="organization" className={input} />
-      </Field>
-      <Field id="website" label="Website or Google Maps link" error={errors.website} hint="A Maps link works if you have no website.">
-        <input {...aria("website")} type="text" inputMode="url" autoComplete="url" className={input} />
-      </Field>
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field id="city" label="City or town" error={errors.city}>
-          <input {...aria("city")} type="text" autoComplete="address-level2" className={input} />
+        <Field id="name" label="Name" error={errors.name}>
+          <input {...aria("name")} type="text" autoComplete="name" className={input} />
         </Field>
-        <Field id="industry" label="Industry" error={errors.industry}>
-          <select {...aria("industry")} defaultValue="" className={input}>
-            <option value="" disabled>
-              Choose one
-            </option>
-            {industries.map((i) => (
-              <option key={i} value={i}>
-                {i}
-              </option>
-            ))}
-          </select>
+        <Field id="company" label="Company (optional)" error={errors.company}>
+          <input {...aria("company")} type="text" autoComplete="organization" className={input} />
         </Field>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field id="whatsapp" label="WhatsApp number" error={errors.whatsapp}>
-          <input {...aria("whatsapp")} type="tel" autoComplete="tel" className={input} />
-        </Field>
         <Field id="email" label="Email" error={errors.email}>
           <input {...aria("email")} type="email" autoComplete="email" className={input} />
         </Field>
+        <Field id="phone" label="Phone or WhatsApp" error={errors.phone}>
+          <input {...aria("phone")} type="tel" autoComplete="tel" className={input} />
+        </Field>
       </div>
-      <Field id="goal" label="Main goal" error={errors.goal} hint="For example: more quote requests from Google, or faster replies to enquiries.">
-        <textarea {...aria("goal")} rows={4} className={input} />
+      <Field id="website" label="Website (optional)" error={errors.website}>
+        <input {...aria("website")} type="text" inputMode="url" autoComplete="url" className={input} />
+      </Field>
+      <Field id="service" label="Service" error={errors.service}>
+        <Select {...aria("service")} options={contactServices} />
+      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field id="budget" label="Budget range" error={errors.budget}>
+          <Select {...aria("budget")} options={budgetRanges} />
+        </Field>
+        <Field id="timeline" label="Timeline" error={errors.timeline}>
+          <Select {...aria("timeline")} options={timelines} />
+        </Field>
+      </div>
+      <Field id="message" label="Message" error={errors.message} hint="What are you trying to build, fix or measure?">
+        <textarea {...aria("message")} rows={5} className={input} />
       </Field>
       <div>
         <div className="flex items-start gap-3">
-          <input
-            {...aria("consent")}
-            type="checkbox"
-            className="mt-1 h-5 w-5 shrink-0 accent-electric"
-          />
+          <input {...aria("consent")} type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-electric" />
           <label htmlFor="consent" className="text-sm text-slate">
-            I agree that ELS may contact me about this request
+            I agree that ELS may contact me about this enquiry
             {isLive("/privacy") && (
               <>
                 {" "}
@@ -219,24 +217,8 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
       <TurnstileField />
       {status === "error" && (
         <p role="alert" className="border border-red-700/40 bg-red-50 p-3 text-sm text-red-800">
-          {serverMsg ? (
-            serverMsg
-          ) : (
-            <>
-              We could not send this just now.{" "}
-              {contactEmail ? (
-            <>
-              Please email{" "}
-              <a className="underline" href={`mailto:${contactEmail}`}>
-                {contactEmail}
-              </a>{" "}
-              instead.
-            </>
-          ) : (
-                "Please try again later."
-              )}
-            </>
-          )}
+          {serverMsg ||
+            (contactEmail ? `We could not send this just now. Please email ${contactEmail} instead.` : "We could not send this just now. Please try again later.")}
         </p>
       )}
       <button
@@ -244,7 +226,7 @@ export function AuditForm({ contactEmail }: { contactEmail?: string }) {
         disabled={status === "submitting"}
         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-electric px-6 py-3 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-60 sm:w-auto"
       >
-        {status === "submitting" ? "Sending…" : "Request a growth audit"}
+        {status === "submitting" ? "Sending…" : "Send message"}
       </button>
     </form>
   );

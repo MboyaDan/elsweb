@@ -3,6 +3,7 @@ import { siteConfig } from "../../content/site.config";
 import { growthPackages } from "../../content/growth.config";
 import { PageHero } from "../../components/PageHero";
 import { AuditForm } from "../../components/AuditForm";
+import { WhatsAppButton } from "../../components/WhatsAppButton";
 
 export const metadata = buildMetadata({
   title: "Request a growth audit",
@@ -40,6 +41,9 @@ export default function GrowthAuditPage() {
             <p className="mt-8">
               The audit tells you what to fix first and what each fix involves. It does not promise results.
             </p>
+            <div className="mt-6">
+              <WhatsAppButton topic="a growth audit" refCode="ga-web" />
+            </div>
             {siteConfig.email && (
               <p className="mt-6">
                 Prefer email? Write to{" "}

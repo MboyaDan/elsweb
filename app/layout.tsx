@@ -7,6 +7,8 @@ import { SiteNav } from "../components/SiteNav";
 import { SiteFooter } from "../components/SiteFooter";
 import { MotionProvider } from "../components/MotionProvider";
 import { JsonLd } from "../components/JsonLd";
+import { Analytics } from "../components/Analytics";
+import { ConsentBanner } from "../components/ConsentBanner";
 import { organizationJsonLd, websiteJsonLd } from "../lib/seo";
 import { startConversationHref } from "../lib/cta";
 
@@ -35,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <SiteFooter />
         </MotionProvider>
+        <Analytics ga4Id={siteConfig.ga4Id} />
+        <ConsentBanner enabled={Boolean(siteConfig.ga4Id)} />
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
       </body>

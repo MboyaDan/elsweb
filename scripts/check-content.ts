@@ -8,7 +8,7 @@
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { proof } from "../content/proof";
-import { liveRoutes, navRoutes } from "../lib/routes";
+import { legalRoutes, liveRoutes, navRoutes } from "../lib/routes";
 
 const root = process.cwd();
 const live = new Set<string>(liveRoutes);
@@ -28,7 +28,7 @@ for (const it of items) {
     errors.push(`${it.kind} "${it.id}" is ${it.status} but renders on ${published.join(", ")}`);
   }
 }
-for (const r of navRoutes) {
+for (const r of [...navRoutes, ...legalRoutes]) {
   if (!live.has(r.href)) errors.push(`Nav links to "${r.href}", which is not a live route`);
 }
 
@@ -58,13 +58,16 @@ if (process.argv.includes("--write-todo")) {
   const fills: string[] = [
     "Set NEXT_PUBLIC_SITE_URL (https://www.elssoftwaresolutions.co.ke) and NEXT_PUBLIC_CONTACT_EMAIL in Vercel project env vars; values are in .env.example",
     "Contact email is a personal Gmail address. Consider a business address on the domain before launch",
-    "WhatsApp Business number, digits only (NEXT_PUBLIC_WHATSAPP_NUMBER): WhatsApp button omitted until set",
+    "WhatsApp Business number, digits only (NEXT_PUBLIC_WHATSAPP_NUMBER): WhatsApp buttons are omitted until set",
     "GitHub and X URLs in content/site.config.ts: omitted until set (LinkedIn is set)",
+    "GA4 measurement ID (NEXT_PUBLIC_GA4_ID): no analytics or consent banner until set",
+    "Resend: RESEND_API_KEY, RESEND_FROM (address on a verified sending subdomain), LEAD_NOTIFY_TO. Without a lead sink in production, forms tell visitors to email or WhatsApp",
+    "Optional: SHEETS_WEBHOOK_URL, Turnstile keys, Upstash Redis URL and token",
     "Production stack list: confirm each tool is true before it appears on a page (Go/Gin/sqlc/pgx, FastAPI, Next.js, PostgreSQL RLS, Redis, WebSockets, M-Pesa Daraja, Cloud Run/Cloud SQL/BigQuery/Pub/Sub, Docker, GitHub Actions, Groq/OpenAI-compatible APIs). Not published yet",
     "Logo: built from the supplied JPEG (transparent PNG variants in public/brand/). Replace with an SVG master when available",
-    "Privacy (/privacy) and Terms (/terms): draft, pending legal review (pages arrive in Stage 4)",
-    "GA4 measurement ID (NEXT_PUBLIC_GA4_ID)",
-    "Resend: RESEND_API_KEY, RESEND_FROM (verified sending subdomain), LEAD_NOTIFY_TO",
+    "/privacy and /terms: draft, pending legal review. Check the 12-month retention period, the Kenyan governing-law clause, and add the ODPC registration line only if registered",
+    "Contact form budget ranges are in USD and are my default choice. Change in lib/validation.ts if you prefer KES",
+    "Copy written by the build (funnel step notes, construction page discovery text, FAQ answers): review before launch",
   ];
   const unverified = items.filter((i) => i.status !== "verified");
   const md = [
