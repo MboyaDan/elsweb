@@ -58,7 +58,7 @@ if (process.argv.includes("--write-todo")) {
   const fills: string[] = [
     "Set NEXT_PUBLIC_SITE_URL (https://www.elssoftwaresolutions.co.ke) and NEXT_PUBLIC_CONTACT_EMAIL in Vercel project env vars; values are in .env.example",
     "Contact email is a personal Gmail address. Consider a business address on the domain before launch",
-    "WhatsApp Business number, digits only (NEXT_PUBLIC_WHATSAPP_NUMBER): WhatsApp buttons are omitted until set",
+    "Set NEXT_PUBLIC_WHATSAPP_NUMBER=254768384224 in Vercel env vars (value is in .env.example). Confirm it is the WhatsApp Business number you want public",
     "GitHub and X URLs in content/site.config.ts: omitted until set (LinkedIn is set)",
     "GA4 measurement ID (NEXT_PUBLIC_GA4_ID): no analytics or consent banner until set",
     "Resend: RESEND_API_KEY, RESEND_FROM (address on a verified sending subdomain), LEAD_NOTIFY_TO. Without a lead sink in production, forms tell visitors to email or WhatsApp",
