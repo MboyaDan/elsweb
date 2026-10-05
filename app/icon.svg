@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" xmlns:c2pa="http://c2pa.org/manifest"><rect width="64" height="64" rx="12.8" fill="#0B1F33"/><g transform="translate(6.4,6.4) scale(0.256)"><g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14 80V36A24 24 0 0 1 38 12H103" stroke="#F8FAFC" stroke-width="26"/>
+<path d="M186 106V162A24 24 0 0 1 162 186H97" stroke="#F8FAFC" stroke-width="26"/>
+<circle cx="161" cy="37" r="28" stroke="#F8FAFC" stroke-width="22"/>
+<circle cx="37" cy="163" r="28" stroke="#F8FAFC" stroke-width="22"/>
+<path d="M112 40H84C60 40 52 66 76 79L124 113C148 126 140 152 116 152H88" stroke="#3B82F6" stroke-width="30"/>
+</g></g></svg>

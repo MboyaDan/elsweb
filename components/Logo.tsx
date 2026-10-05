@@ -1,25 +1,36 @@
 import Image from "next/image";
-import { siteConfig } from "../content/site.config";
 
 /**
- * Mark C, processed from the supplied artwork into transparent PNGs:
- * /public/brand/mark-dark.png (for light surfaces) and mark-light.png (white, for dark surfaces).
- * To swap the logo, replace those two files (keep them square-ish) or edit this component.
+ * Brand logo, from the supplied SVG set (files live in /public/brand/).
+ * - "nav": mark + ELS wordmark. Compact, used in the header.
+ * - "full": mark + ELS + "EasyLiving Software Solutions" tagline. Used where it is large enough to read (footer).
+ * tone="light" is for dark backgrounds (reversed artwork); tone="dark" is for light backgrounds.
+ * The company name is part of the artwork, so it is not repeated as text beside it.
  */
-export function Logo({ tone = "light" }: { tone?: "light" | "dark" }) {
+const files = {
+  nav: { light: "/brand/logo-nav-reversed.svg", dark: "/brand/logo-nav-light.svg", w: 458, h: 208 },
+  full: { light: "/brand/logo-full-reversed.svg", dark: "/brand/logo-full-light.svg", w: 668, h: 208 },
+} as const;
+
+export function Logo({
+  tone = "light",
+  variant = "nav",
+  className = "h-10",
+}: {
+  tone?: "light" | "dark";
+  variant?: "nav" | "full";
+  className?: string;
+}) {
+  const f = files[variant];
   return (
-    <span className="inline-flex items-center gap-3">
-      <Image
-        src={tone === "light" ? "/brand/mark-light.png" : "/brand/mark-dark.png"}
-        alt=""
-        width={36}
-        height={36}
-        priority
-      />
-      <span className={`text-lg font-semibold tracking-tight ${tone === "light" ? "text-white" : "text-navy"}`}>
-        {siteConfig.shortName}
-        <span className="ml-2 font-normal opacity-70">EasyLiving Software</span>
-      </span>
-    </span>
+    <Image
+      src={tone === "light" ? f.light : f.dark}
+      alt="EasyLiving Software Solutions (ELS)"
+      width={f.w}
+      height={f.h}
+      priority={variant === "nav"}
+      unoptimized
+      className={`w-auto ${className}`}
+    />
   );
 }

@@ -22,7 +22,7 @@ export function SiteNav({ ctaHref }: { ctaHref?: string }) {
       }`}
     >
       <nav aria-label="Primary" className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
-        <Link href="/" aria-label="EasyLiving Software Solutions, home">
+        <Link href="/" aria-label="EasyLiving Software Solutions, home" className="shrink-0">
           <Logo />
         </Link>
         <div className="flex items-center gap-6">
@@ -36,7 +36,7 @@ export function SiteNav({ ctaHref }: { ctaHref?: string }) {
             ))}
           </ul>
           {ctaHref && (
-            <Button href={ctaHref} ctaId="nav-cta" className="!min-h-10 !px-4 !py-2 text-sm">
+            <Button href={ctaHref} ctaId="nav-cta" className="!min-h-10 whitespace-nowrap !px-4 !py-2 text-sm">
               Start a conversation
             </Button>
           )}

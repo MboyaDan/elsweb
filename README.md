@@ -87,7 +87,7 @@ Do not use `onboarding@resend.dev` as the sender; the code never does.
 - `app/`: routes, including `app/api/lead/route.ts`
 - `content/`: typed, Zod-validated content (`site.config.ts` reads env, `services.ts`, `growth.config.ts`, `construction.ts`, `proof.ts`)
 - `lib/`: `routes.ts`, `seo.ts`, `analytics.ts`, `consent.ts`, `validation.ts`, `leads/`
-- `components/`: UI. `Logo.tsx` uses the PNGs in `public/brand/`
+- `components/`: UI. `Logo.tsx` uses the SVGs in `public/brand/` (nav lockup: mark + ELS; full lockup with tagline for the footer)
 - `scripts/check-content.ts`: the prebuild verification check
 
 ## Dependencies beyond the brief
